@@ -39,9 +39,15 @@ end
 allLetters = SortArrayofStruct(allLetters, 'col');
 currentCol = allLetters(i).col;
 fprintf('%s', allLetters(1).alphabet)
+for i = 1:size(allLetters, 2)-1
+    dist = allLetters(i+1).col - allLetters(i).col;
+    distances(i) = dist;
+end
+averageDist = mean(distances);
+distThresh = 1.5 * averageDist;
 for i = 2:size(allLetters, 2)
     str = allLetters(i).alphabet;
-    if currentCol + 70 < allLetters(i).col
+    if currentCol + distThresh < allLetters(i).col
         str = [' ', str];
     end
     currentCol = allLetters(i).col;
