@@ -37,6 +37,13 @@ for i = 1:size(alphabet,2)
     end
 end
 allLetters = SortArrayofStruct(allLetters, 'col');
-for i = 1:size(allLetters, 2)
-    fprintf('%s', allLetters(i).alphabet)
+currentCol = allLetters(i).col;
+fprintf('%s', allLetters(1).alphabet)
+for i = 2:size(allLetters, 2)
+    str = allLetters(i).alphabet;
+    if currentCol + 70 < allLetters(i).col
+        str = [' ', str];
+    end
+    currentCol = allLetters(i).col;
+    fprintf('%s', str)
 end
