@@ -99,6 +99,7 @@ file = fopen('temp/rectangle.txt', 'w');
 fprintf(file, '%d %d ', min_width, min_height);
 fprintf(file, '%d %d', (max_width - min_width), (max_height-min_height));
 fclose(file);
-imwrite(result, 'temp/post_processed.png');
+cropped = imcrop(result, [min_height min_width max_height-min_height max_width-min_width]);
+imwrite(cropped, 'temp/post_processed.png');
 
 

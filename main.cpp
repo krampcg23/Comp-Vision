@@ -39,8 +39,17 @@ int main(int argc, char* argv[])
         fin >> word;
         dictionary[word] = 1;
     }
-
     fin.close();
+
+    //ifstream finRec("temp/rectangle.txt");
+    //if (!finRec) {
+    //    finRec.clear();
+	//cerr << "Error opening file \"" << "temp/rectangle.txt" << "\"!" << endl;
+        //return 1;
+    //}
+    //int x, y, width, height;
+    //finRec >> x >> y >> width >> height;
+    //finRec.close();
  
     // Create Tesseract object
     tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
@@ -54,8 +63,10 @@ int main(int argc, char* argv[])
     // Open input image using OpenCV
     Mat im = cv::imread(imPath, IMREAD_COLOR);
    
+    //cout << x << " " << y << " " <<  width<< " " << height << endl;
     // Set image data
     ocr->SetImage(im.data, im.cols, im.rows, 3, im.step);
+    //ocr->SetRectangle(x, y, width, height);
  
     // Run Tesseract OCR on image
     outText = string(ocr->GetUTF8Text());
