@@ -1,4 +1,4 @@
-I = imread('images/im3.JPG');
+I = imread('images/im1.JPG');
 
 [height width colors] = size(I);
 
@@ -99,6 +99,6 @@ file = fopen('temp/rectangle.txt', 'w');
 fprintf(file, '%d %d ', min_width, min_height);
 fprintf(file, '%d %d', (max_width - min_width), (max_height-min_height));
 fclose(file);
-saveas(gcf, 'temp/post_processed.png');
+imwrite(result, 'temp/post_processed.png');
 
 
