@@ -41,6 +41,27 @@ for i = 1:size(tempTestImages, 2)
 end
 TestLabels = loadMNISTLabels(strcat(path, 'Test/t10k-labels-idx1-ubyte'));
 
+[trainSymbols, testSymbols, trainSymLabels, testSymLabels] = ...
+    processSymbols('Data/Symbols/');
+
+symbolLayers = [ imageInputLayer([28 28 1])
+            convolution2dLayer(5,20)
+            reluLayer
+            maxPooling2dLayer(2, 'Stride', 2)
+            fullyConnectedLayer(3)
+            softmaxLayer
+            classificationLayer() ];
+        
+batch = 15;
+trainOptions = trainingOptions( 'sgdm',...
+    'MiniBatchSize', batch,...
+    'Plots', 'training-progress',...
+    'MaxEpochs',20);
+nnSymbol = trainNetwork(trainSymbols, trainSymLabels, symbolLayers, trainOptions);
+testing = nnSymbol.classify(testSymbols);
+testAccuracy = sum(testing == testSymLabels) / numel(testSymLabels);
+fprintf("Test Accuracy for Symbols is %f\n", testAccuracy);
+
 layers = [  imageInputLayer([28 28 1])
             convolution2dLayer(5,20)
             reluLayer
@@ -57,10 +78,7 @@ trainOptions = trainingOptions( 'sgdm',...
 nn = trainNetwork(TrainImages, categorical(TrainLabels), layers, trainOptions);
 testing = nn.classify(TestImages);
 testAccuracy = sum(testing == categorical(TestLabels)) / numel(TestLabels);
-fprintf("Test Accuracy is %f\n", testAccuracy);
-
-[trainSymbols, testSymbols, trainSymLabels, testSymLabels] = ...
-    processSymbols('Data/Symbols/');
+fprintf("Test Accuracy is for numerics is %f\n", testAccuracy);
 
 for i=2:numConnectedComponents
     [row,col] = find(Labels == i);
