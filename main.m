@@ -5,14 +5,14 @@
 clear all
 close all
 
-I=rgb2gray(imread('images/34567.jpg'));
+I=rgb2gray(imread('images/D234.png'));
 I = imresize(I, 0.5);
 imshow(I)
 %I = imcomplement(I);
 I =~im2bw(I,0.4);
 I = bwareaopen(I,10);
 numSymbols = 1;
-symbolsExtracted = [];
+symbolsExtracted = {};
 
 [Labels numConnectedComponents]=bwlabel(I);
 props = regionprops(Labels,'BoundingBox');
@@ -80,13 +80,18 @@ testing = nn.classify(TestImages);
 testAccuracy = sum(testing == categorical(TestLabels)) / numel(TestLabels);
 fprintf("Test Accuracy is for numerics is %f\n", testAccuracy);
 
-for i=2:numConnectedComponents
+for i=1:numConnectedComponents
     [row,col] = find(Labels == i);
     symbol = zeros(28, 28, 1, 1);
     newImg = imgaussfilt(single(I(min(row):max(row),min(col):max(col))),1);
     symbol(:,:,1,1) = padarray(imresize(newImg, [18 18]),[5 5],0,'both');
-    [prediction, score] = nn.classify(symbol);
-    symbolsExtracted(numSymbols) = str2num(char(prediction));
+    if i == 1
+        [prediction, score] = nnSymbol.classify(symbol);
+        symbolsExtracted(numSymbols) = {char(prediction)};
+    else
+        [prediction, score] = nn.classify(symbol);
+        symbolsExtracted(numSymbols) = {str2num(char(prediction))};
+    end
     numSymbols = numSymbols + 1;
 end
 symbolsExtracted   
