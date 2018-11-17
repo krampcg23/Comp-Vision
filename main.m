@@ -5,12 +5,12 @@
 clear all
 close all
 
-I=rgb2gray(imread('images/345.jpg'));
+I=rgb2gray(imread('images/216.jpg'));
 I = imresize(I, 0.5);
 imshow(I)
 %I = imcomplement(I);
 I =~im2bw(I,0.4);
-%I = bwareaopen(I,10);
+I = bwareaopen(I,10);
 numSymbols = 1;
 symbolsExtracted = [];
 
@@ -62,8 +62,9 @@ fprintf("Test Accuracy is %f\n", testAccuracy);
 for i=1:numConnectedComponents
     [row,col] = find(Labels == i);
     symbol = zeros(28, 28, 1, 1);
-    symbol(:,:,1,1) = imresize(I(min(row)-10:max(row)+10,min(col)-10:max(col)+10), [28 28]);
-    prediction = nn.classify(symbol);
+    newImg = imgaussfilt(single(I(min(row):max(row),min(col):max(col))),1);
+    symbol(:,:,1,1) = padarray(imresize(newImg, [22 22]),[3 3],0,'both');
+    [prediction, score] = nn.classify(symbol);
     symbolsExtracted(numSymbols) = str2num(char(prediction));
     numSymbols = numSymbols + 1;
 end
