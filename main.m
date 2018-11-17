@@ -5,7 +5,7 @@
 clear all
 close all
 
-I=rgb2gray(imread('images/216.jpg'));
+I=rgb2gray(imread('images/34567.jpg'));
 I = imresize(I, 0.5);
 imshow(I)
 %I = imcomplement(I);
@@ -59,11 +59,14 @@ testing = nn.classify(TestImages);
 testAccuracy = sum(testing == categorical(TestLabels)) / numel(TestLabels);
 fprintf("Test Accuracy is %f\n", testAccuracy);
 
-for i=1:numConnectedComponents
+[trainSymbols, testSymbols, trainSymLabels, testSymLabels] = ...
+    processSymbols('Data/Symbols/');
+
+for i=2:numConnectedComponents
     [row,col] = find(Labels == i);
     symbol = zeros(28, 28, 1, 1);
     newImg = imgaussfilt(single(I(min(row):max(row),min(col):max(col))),1);
-    symbol(:,:,1,1) = padarray(imresize(newImg, [22 22]),[3 3],0,'both');
+    symbol(:,:,1,1) = padarray(imresize(newImg, [18 18]),[5 5],0,'both');
     [prediction, score] = nn.classify(symbol);
     symbolsExtracted(numSymbols) = str2num(char(prediction));
     numSymbols = numSymbols + 1;
