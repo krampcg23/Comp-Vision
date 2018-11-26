@@ -118,20 +118,41 @@ y = min(row);
 
 % Gathering info for the text
 text_str = '';
-if symbolsExtracted{1} == 'D', text_str = [text_str '$'];
-elseif symbolsExtracted{1} == 'E', text_str = [text_str 'E'];
-else text_str = [text_str 'Y'];
-end
-for i = 2:size(symbolsExtracted, 2)
+for i = 3:size(symbolsExtracted, 2)
     text_str = [text_str num2str(symbolsExtracted{i})];
 end
 
+%   D E Y
+% D
+% E
+% Y
+conversionMatrix = [1 0.88 113; 1.13 1 128.76; 0.0088 0.0078 1];
+from = symbolsExtracted{1};
+to = symbolsExtracted{2};
+if from == 'D'
+    from = 1;
+elseif from == 'E'
+    from = 2;
+else
+    from = 3;
+end
+
+if to == 'D'
+    to = 1;
+elseif to == 'E'
+    to = 2;
+else
+    to = 3;
+end
+
+convertedVal = conversionMatrix(from, to) * str2num(text_str);
+
 remainingSpace = size(IProject, 2) - x;
 if remainingSpace > 200
-    spacePerChar = 70;
+    spacePerChar = 120;
 else
     spacePerChar = remainingSpace / numConnectedComponents * 1.5;
 end
 
-IProject = insertText(IProject, [x y], text_str, 'FontSize', floor(spacePerChar), 'BoxColor', 'white');
+IProject = insertText(IProject, [x y], convertedVal, 'FontSize', floor(spacePerChar), 'BoxColor', 'white');
 figure, imshow(IProject);
