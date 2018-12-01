@@ -112,9 +112,26 @@ symbolsExtracted
 IProject=(imread(directory));
 %IProject = imresize(IProject, 0.5);
 figure, imshow(IProject);
-[row,col] = find(Labels == 1);
-x = max(col);
-y = min(row);
+[row1, col1] = find(Labels == 1);
+[row2, col2] = find(Labels == 2);
+if min(row1) < min(row2)
+    topRow = row1;
+    topCol = col1;
+    bottomRow = row2;
+    bottomCol = col2;
+    fromNum = 1;
+    toNum = 2;
+else 
+    topRow = row2;
+    topCol = col2;
+    bottomRow = row1;
+    bottomCol = col1;
+    fromNum = 2;
+    toNum = 1;
+end
+
+x = max(bottomCol);
+y = min(bottomRow);
 
 % Gathering info for the text
 text_str = '';
@@ -127,8 +144,8 @@ end
 % E
 % Y
 conversionMatrix = [1 0.88 113; 1.13 1 128.76; 0.0088 0.0078 1];
-from = symbolsExtracted{2};
-to = symbolsExtracted{1};
+from = symbolsExtracted{fromNum};
+to = symbolsExtracted{toNum};
 if from == 'D'
     from = 1;
 elseif from == 'E'

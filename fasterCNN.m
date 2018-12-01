@@ -13,10 +13,10 @@ vehicleDataset = table(data.gTruth.DataSource.Source, cellArray);
 vehicleDataset.Properties.VariableNames = {'imageFilename' 'vehicle'};
 
 
-inputLayer = imageInputLayer([32 32 3]);
+inputLayer = imageInputLayer([32 32]);
 % Define the convolutional layer parameters.
 filterSize = [3 3];
-numFilters = 32;
+numFilters = 10;
 
 % Create the middle layers.
 middleLayers = [
@@ -29,21 +29,9 @@ middleLayers = [
     
     ];
 finalLayers = [
-    
-    % Add a fully connected layer with 64 output neurons. The output size
-    % of this layer will be an array with a length of 64.
     fullyConnectedLayer(64)
-
-    % Add a ReLU non-linearity.
     reluLayer()
-
-    % Add the last fully connected layer. At this point, the network must
-    % produce outputs that can be used to measure whether the input image
-    % belongs to one of the object classes or background. This measurement
-    % is made using the subsequent loss layers.
     fullyConnectedLayer(width(vehicleDataset))
-
-    % Add the softmax loss layer and classification layer. 
     softmaxLayer()
     classificationLayer()
 ];
