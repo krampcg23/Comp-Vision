@@ -10,8 +10,8 @@ directory = 'images/cropped.png';
 I=(imread(directory));
 %I = imresize(I, 0.5);
 imshow(I)
-I =~imbinarize(I,0.2);
-I = bwareaopen(I,150);
+I =~imbinarize(I,0.5);
+I = bwareaopen(I,5);
 numSymbols = 1;
 symbolsExtracted = {};
 
@@ -109,10 +109,10 @@ symbolsExtracted
 
 %% Search for the four quadrants
 
-IProject=rgb2gray(imread(directory));
+IProject=(imread(directory));
 %IProject = imresize(IProject, 0.5);
 figure, imshow(IProject);
-[row,col] = find(Labels == 2);
+[row,col] = find(Labels == 1);
 x = max(col);
 y = min(row);
 
@@ -127,8 +127,8 @@ end
 % E
 % Y
 conversionMatrix = [1 0.88 113; 1.13 1 128.76; 0.0088 0.0078 1];
-from = symbolsExtracted{1};
-to = symbolsExtracted{2};
+from = symbolsExtracted{2};
+to = symbolsExtracted{1};
 if from == 'D'
     from = 1;
 elseif from == 'E'
@@ -149,9 +149,9 @@ convertedVal = conversionMatrix(from, to) * str2num(text_str);
 
 remainingSpace = size(IProject, 2) - x;
 if remainingSpace > 200
-    spacePerChar = 120;
+    spacePerChar = 40;
 else
-    spacePerChar = remainingSpace / numConnectedComponents * 1.5;
+    spacePerChar = remainingSpace / numConnectedComponents * 1;
 end
 
 IProject = insertText(IProject, [x y], convertedVal, 'FontSize', floor(spacePerChar), 'BoxColor', 'white');
