@@ -5,12 +5,12 @@
 clear all
 close all
 
-directory = 'images/DtoY.png';
+directory = 'images/cropped.png';
 
-I=rgb2gray(imread(directory));
+I=(imread(directory));
 %I = imresize(I, 0.5);
 imshow(I)
-I =~imbinarize(I,0.4);
+I =~imbinarize(I,0.2);
 I = bwareaopen(I,150);
 numSymbols = 1;
 symbolsExtracted = {};

@@ -1,15 +1,16 @@
+clear all
 % Load vehicle data set
-data = load('fasterRCNNVehicleTrainingData.mat');
-vehicleDataset = data.vehicleTrainingData;
-% Display first few rows of the data set.
-vehicleDataset(1:4,:)% Add fullpath to the local vehicle data folder.
-dataDir = fullfile(toolboxdir('vision'),'visiondata');
-vehicleDataset.imageFilename = fullfile(dataDir, vehicleDataset.imageFilename);
+% data = load('fasterRCNNVehicleTrainingData.mat');
+% vehicleDataset = data.vehicleTrainingData;
+% % Display first few rows of the data set.
+% vehicleDataset(1:4,:)% Add fullpath to the local vehicle data folder.
+% dataDir = fullfile(toolboxdir('vision'),'visiondata');
+% vehicleDataset.imageFilename = fullfile(dataDir, vehicleDataset.imageFilename);
 
-% data = load('localization_labelled.mat');
-% cellArray = table2cell(data.gTruth.LabelData);
-% vehicleDataset = table(data.gTruth.DataSource.Source, cellArray);
-% vehicleDataset.Properties.VariableNames = {'imageFilename' 'vehicle'};
+data = load('localization_labelled.mat');
+cellArray = table2cell(data.gTruth.LabelData);
+vehicleDataset = table(data.gTruth.DataSource.Source, cellArray);
+vehicleDataset.Properties.VariableNames = {'imageFilename' 'vehicle'};
 
 
 inputLayer = imageInputLayer([32 32 3]);
@@ -96,7 +97,7 @@ if doTrainingAndEval
     
     % Train Faster R-CNN detector. Select a BoxPyramidScale of 1.2 to allow
     % for finer resolution for multiscale object detection.
-    detector = trainFasterRCNNObjectDetector(trainingData, layers, options, ...
+    detector = trainFasterRCNNObjectDetector(vehicleDataset, layers, options, ...
         'NegativeOverlapRange', [0 0.3], ...
         'PositiveOverlapRange', [0.6 1], ...
         'NumRegionsToSample', [256 128 256 128], ...
@@ -105,9 +106,7 @@ else
     % Load pretrained detector for the example.
     detector = data.detector;
 end
-% Read a test image.
-I = imread(testData.imageFilename{1});
-
+I = imread('images/Localization/small/5.png');
 % Run the detector.
 [bboxes,scores] = detect(detector,I);
 
