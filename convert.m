@@ -1,14 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Clayton Kramp and Katrina Steinman
 % CSCI 507 Final Project
+% Convert file - takes in input image and converts it to our expected
+% output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 close all
 
-directory = 'images/cropped.png';
-
+% Start with loading an image
+directory = 'images/Tests/crop-3.png';
+% Bounding box stuff
 I=(imread(directory));
-%I = imresize(I, 0.5);
 imshow(I)
 I =~imbinarize(I,0.5);
 I = bwareaopen(I,5);
@@ -31,6 +33,7 @@ hold off
 
 pause
 
+% Train our two MNIST and symbol networks
 path = 'Data/';
 
 tempTrainImages = loadMNISTImages(strcat(path,'Train/train-images-idx3-ubyte'));
@@ -88,7 +91,7 @@ testing = nn.classify(TestImages);
 testAccuracy = sum(testing == categorical(TestLabels)) / numel(TestLabels);
 fprintf("Test Accuracy is for numerics is %f\n", testAccuracy);
 
-%%
+%% Running symbol and MNIST classification
 for i=1:numConnectedComponents
     if i == minIndex
         symbolsExtracted(numSymbols) = {'.'};
@@ -109,10 +112,9 @@ for i=1:numConnectedComponents
 end
 symbolsExtracted
 
-%% Search for the four quadrants
+%% Projection
 
 IProject=(imread(directory));
-%IProject = imresize(IProject, 0.5);
 figure, imshow(IProject);
 [row1, col1] = find(Labels == 1);
 [row2, col2] = find(Labels == 2);
@@ -175,3 +177,12 @@ end
 
 IProject = insertText(IProject, [x y], convertedVal, 'FontSize', floor(spacePerChar), 'BoxColor', 'white');
 figure, imshow(IProject);
+
+%% Filters display for pretty pictures
+I = deepDreamImage(nn,2,1:16,'PyramidLevels',1);
+figure
+hold on
+I = imtile(I,'ThumbnailSize',[64 64]);
+title('Filters for MNIST', 'FontSize', 32)
+imshow(I)
+hold off
